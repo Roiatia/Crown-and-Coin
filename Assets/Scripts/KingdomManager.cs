@@ -6,6 +6,9 @@ public class KingdomManager : MonoBehaviour
     [Header("Managers")]
     [SerializeField] private ResourceManager resourceManager;
 
+    [Header("Balance")]
+    [SerializeField] private KingdomBalanceData balanceData;
+
     [Header("Population")]
     [SerializeField] private int citizens = 10;
     [SerializeField] private int happiness = 70;
@@ -14,19 +17,6 @@ public class KingdomManager : MonoBehaviour
     [Header("Buildings")]
     [SerializeField] private int farms = 1;
     [SerializeField] private int wells = 1;
-
-    [Header("Daily Balance")]
-    [SerializeField] private int foodPerFarm = 8;
-    [SerializeField] private int waterPerWell = 8;
-    [SerializeField] private int foodConsumedPerCitizen = 1;
-    [SerializeField] private int waterConsumedPerCitizen = 1;
-    [SerializeField] private int goldTaxPerCitizen = 2;
-
-    [Header("Costs")]
-    [SerializeField] private int farmCostGold = 8;
-    [SerializeField] private int wellCostGold = 8;
-    [SerializeField] private int knightCostGold = 10;
-    [SerializeField] private int knightCostFood = 2;
 
     public int Citizens => citizens;
     public int Happiness => happiness;
@@ -38,7 +28,7 @@ public class KingdomManager : MonoBehaviour
 
     public bool BuildFarm()
     {
-        if (!resourceManager.Spend(ResourceType.Gold, farmCostGold))
+        if (!resourceManager.Spend(ResourceType.Gold, balanceData.farmCostGold))
             return false;
 
         farms++;
@@ -48,7 +38,7 @@ public class KingdomManager : MonoBehaviour
 
     public bool BuildWell()
     {
-        if (!resourceManager.Spend(ResourceType.Gold, wellCostGold))
+        if (!resourceManager.Spend(ResourceType.Gold, balanceData.wellCostGold))
             return false;
 
         wells++;
@@ -58,17 +48,16 @@ public class KingdomManager : MonoBehaviour
 
     public bool TrainKnight()
     {
-        if (!resourceManager.HasEnough(ResourceType.Gold, knightCostGold))
+        if (!resourceManager.HasEnough(ResourceType.Gold, balanceData.knightCostGold))
             return false;
 
-        if (!resourceManager.HasEnough(ResourceType.Food, knightCostFood))
+        if (!resourceManager.HasEnough(ResourceType.Food, balanceData.knightCostFood))
             return false;
 
-        resourceManager.Spend(ResourceType.Gold, knightCostGold);
-        resourceManager.Spend(ResourceType.Food, knightCostFood);
+        resourceManager.Spend(ResourceType.Gold, balanceData.knightCostGold);
+        resourceManager.Spend(ResourceType.Food, balanceData.knightCostFood);
 
         knights++;
-        
 
         OnKingdomChanged?.Invoke();
         return true;
@@ -76,11 +65,11 @@ public class KingdomManager : MonoBehaviour
 
     public string ProcessDay()
     {
-        int producedFood = farms * foodPerFarm;
-        int producedWater = wells * waterPerWell;
-        int consumedFood = citizens * foodConsumedPerCitizen;
-        int consumedWater = citizens * waterConsumedPerCitizen;
-        int earnedGold = citizens * goldTaxPerCitizen;
+        int producedFood = farms * balanceData.foodPerFarm;
+        int producedWater = wells * balanceData.waterPerWell;
+        int consumedFood = citizens * balanceData.foodConsumedPerCitizen;
+        int consumedWater = citizens * balanceData.waterConsumedPerCitizen;
+        int earnedGold = citizens * balanceData.goldTaxPerCitizen;
 
         resourceManager.AddResource(ResourceType.Food, producedFood);
         resourceManager.AddResource(ResourceType.Water, producedWater);
@@ -91,19 +80,19 @@ public class KingdomManager : MonoBehaviour
 
         if (!hadEnoughFood)
         {
-            happiness -= 15;
-            citizens -= 1;
+            happiness -= balanceData.missingFoodPenalty;
+            citizens--;
         }
 
         if (!hadEnoughWater)
         {
-            happiness -= 15;
-            citizens -= 1;
+            happiness -= balanceData.missingWaterPenalty;
+            citizens--;
         }
 
         if (hadEnoughFood && hadEnoughWater)
         {
-            happiness += 5;
+            happiness += balanceData.dailySuccessBonus;
         }
 
         happiness = Mathf.Clamp(happiness, 0, 100);
@@ -120,21 +109,18 @@ public class KingdomManager : MonoBehaviour
 
     public void ApplyRaid()
     {
-        int foodLoss = 5;
-        int goldLoss = 5;
-
-        resourceManager.Spend(ResourceType.Food, foodLoss);
-        resourceManager.Spend(ResourceType.Gold, goldLoss);
+        resourceManager.Spend(ResourceType.Food, balanceData.raidFoodLoss);
+        resourceManager.Spend(ResourceType.Gold, balanceData.raidGoldLoss);
 
         if (knights > 0)
         {
             knights--;
-            happiness -= 5;
+            happiness -= balanceData.raidHappinessLossWithKnights;
         }
         else
         {
-            citizens -= 2;
-            happiness -= 20;
+            citizens -= balanceData.raidCitizenLossWithoutKnights;
+            happiness -= balanceData.raidHappinessLossWithoutKnights;
         }
 
         happiness = Mathf.Clamp(happiness, 0, 100);

@@ -28,6 +28,10 @@ public class GameUI : MonoBehaviour
     [SerializeField] private GameObject daySummaryPanel;
     [SerializeField] private TMP_Text daySummaryText;
 
+    [Header("Game Over")]
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private TMP_Text gameOverText;
+
     private void OnEnable()
     {
         resourceManager.OnResourceChanged += HandleResourceChanged;
@@ -59,6 +63,7 @@ public class GameUI : MonoBehaviour
     private void Start()
     {
         daySummaryPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
         RefreshHud();
         HandleDayChanged(gameManager.CurrentDay, gameManager.MaxDays);
     }
@@ -111,6 +116,21 @@ public class GameUI : MonoBehaviour
         if (isPlaying)
         {
             daySummaryPanel.SetActive(false);
+        }
+
+
+        if (state == GameState.Win)
+        {
+            daySummaryPanel.SetActive(false);
+            gameOverPanel.SetActive(true);
+            gameOverText.text = "Victory!\nThe kingdom survived.";
+        }
+
+        if (state == GameState.Lose)
+        {
+            daySummaryPanel.SetActive(false);
+            gameOverPanel.SetActive(true);
+            gameOverText.text = "Game Over\nThe kingdom has fallen.";
         }
     }
 

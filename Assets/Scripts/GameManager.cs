@@ -15,29 +15,30 @@ public class GameManager : MonoBehaviour
     [Header("Managers")]
     [SerializeField] private KingdomManager kingdomManager;
 
-    [Header("Game Settings")]
-    [SerializeField] private int maxDays = 7;
+    [Header("Balance")]
+    [SerializeField] private KingdomBalanceData balanceData;
+
+    [Header("Runtime")]
     [SerializeField] private int currentDay = 1;
-    [SerializeField] private float dayDuration = 30f;
-    [SerializeField] private float raidChance = 0.35f;
 
     private float dayTimer;
 
     public int CurrentDay => currentDay;
-    public int MaxDays => maxDays;
-   
+    public int MaxDays => balanceData.maxDays;
+    public float DayTimer => dayTimer;
+    public float DayDuration => balanceData.dayDuration;
     public GameState CurrentState { get; private set; } = GameState.Playing;
 
     public event Action<GameState> OnStateChanged;
     public event Action<int, int> OnDayChanged;
-
+    public event Action<float, float> OnTimerChanged;
     public event Action<string> OnDaySummaryReady;
 
     private void Start()
     {
-        dayTimer = dayDuration;
-        OnDayChanged?.Invoke(currentDay, maxDays);
-    
+        dayTimer = balanceData.dayDuration;
+        OnDayChanged?.Invoke(currentDay, balanceData.maxDays);
+        OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
         ChangeState(GameState.Playing);
     }
 
@@ -47,7 +48,7 @@ public class GameManager : MonoBehaviour
             return;
 
         dayTimer -= Time.deltaTime;
-     
+        OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
 
         if (dayTimer <= 0f)
         {
@@ -61,12 +62,13 @@ public class GameManager : MonoBehaviour
             return;
 
         dayTimer = 0f;
+        OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
 
         string summary = kingdomManager.ProcessDay();
 
         bool raidHappened = false;
 
-        if (currentDay > 1 && UnityEngine.Random.value <= raidChance)
+        if (currentDay > 1 && UnityEngine.Random.value <= balanceData.raidChance)
         {
             kingdomManager.ApplyRaid();
             raidHappened = true;
@@ -85,7 +87,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (currentDay >= maxDays)
+        if (currentDay >= balanceData.maxDays)
         {
             ChangeState(GameState.Win);
             return;
@@ -100,9 +102,10 @@ public class GameManager : MonoBehaviour
             return;
 
         currentDay++;
-        dayTimer = dayDuration;
+        dayTimer = balanceData.dayDuration;
 
-        OnDayChanged?.Invoke(currentDay, maxDays);
+        OnDayChanged?.Invoke(currentDay, balanceData.maxDays);
+        OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
 
         ChangeState(GameState.Playing);
     }
@@ -111,8 +114,8 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState == GameState.Playing)
         {
-            ChangeState(GameState.Paused);
             Time.timeScale = 0f;
+            ChangeState(GameState.Paused);
             return;
         }
 
