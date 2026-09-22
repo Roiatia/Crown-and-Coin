@@ -18,26 +18,49 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     [SerializeField] private int maxDays = 7;
     [SerializeField] private int currentDay = 1;
+    [SerializeField] private float dayDuration = 30f;
     [SerializeField] private float raidChance = 0.35f;
+
+    private float dayTimer;
 
     public int CurrentDay => currentDay;
     public int MaxDays => maxDays;
+   
     public GameState CurrentState { get; private set; } = GameState.Playing;
 
     public event Action<GameState> OnStateChanged;
     public event Action<int, int> OnDayChanged;
+
     public event Action<string> OnDaySummaryReady;
 
     private void Start()
     {
+        dayTimer = dayDuration;
         OnDayChanged?.Invoke(currentDay, maxDays);
+    
         ChangeState(GameState.Playing);
+    }
+
+    private void Update()
+    {
+        if (CurrentState != GameState.Playing)
+            return;
+
+        dayTimer -= Time.deltaTime;
+     
+
+        if (dayTimer <= 0f)
+        {
+            EndDay();
+        }
     }
 
     public void EndDay()
     {
         if (CurrentState != GameState.Playing)
             return;
+
+        dayTimer = 0f;
 
         string summary = kingdomManager.ProcessDay();
 
@@ -50,13 +73,9 @@ public class GameManager : MonoBehaviour
         }
 
         if (raidHappened)
-        {
             summary += "\n\nRaid happened during the night!";
-        }
         else
-        {
             summary += "\n\nNo raid tonight.";
-        }
 
         OnDaySummaryReady?.Invoke(summary);
 
@@ -81,7 +100,10 @@ public class GameManager : MonoBehaviour
             return;
 
         currentDay++;
+        dayTimer = dayDuration;
+
         OnDayChanged?.Invoke(currentDay, maxDays);
+
         ChangeState(GameState.Playing);
     }
 

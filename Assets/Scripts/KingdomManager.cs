@@ -68,7 +68,7 @@ public class KingdomManager : MonoBehaviour
         resourceManager.Spend(ResourceType.Food, knightCostFood);
 
         knights++;
-        citizens++;
+        
 
         OnKingdomChanged?.Invoke();
         return true;

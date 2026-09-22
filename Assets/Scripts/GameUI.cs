@@ -19,21 +19,27 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TMP_Text knightsText;
 
     [Header("Buttons")]
-    [SerializeField] private Button buildFarm;
-    [SerializeField] private Button buildWell;
-    [SerializeField] private Button trainKnights;
-    [SerializeField] private Button endDay;
+    [SerializeField] private Button buildFarmButton;
+    [SerializeField] private Button buildWellButton;
+    [SerializeField] private Button trainKnightButton;
+    [SerializeField] private Button endDayButton;
+
+    [Header("Day Summary")]
+    [SerializeField] private GameObject daySummaryPanel;
+    [SerializeField] private TMP_Text daySummaryText;
 
     private void OnEnable()
     {
         resourceManager.OnResourceChanged += HandleResourceChanged;
         kingdomManager.OnKingdomChanged += RefreshHud;
         gameManager.OnDayChanged += HandleDayChanged;
+        gameManager.OnDaySummaryReady += HandleDaySummaryReady;
+        gameManager.OnStateChanged += HandleStateChanged;
 
-        buildFarm.onClick.AddListener(HandleBuildFarmClicked);
-        buildWell.onClick.AddListener(HandleBuildWellClicked);
-        trainKnights.onClick.AddListener(HandleTrainKnightClicked);
-        endDay.onClick.AddListener(HandleEndDayClicked);
+        buildFarmButton.onClick.AddListener(HandleBuildFarmClicked);
+        buildWellButton.onClick.AddListener(HandleBuildWellClicked);
+        trainKnightButton.onClick.AddListener(HandleTrainKnightClicked);
+        endDayButton.onClick.AddListener(HandleEndDayClicked);
     }
 
     private void OnDisable()
@@ -41,15 +47,18 @@ public class GameUI : MonoBehaviour
         resourceManager.OnResourceChanged -= HandleResourceChanged;
         kingdomManager.OnKingdomChanged -= RefreshHud;
         gameManager.OnDayChanged -= HandleDayChanged;
+        gameManager.OnDaySummaryReady -= HandleDaySummaryReady;
+        gameManager.OnStateChanged -= HandleStateChanged;
 
-        buildFarm.onClick.RemoveListener(HandleBuildFarmClicked);
-        buildWell.onClick.RemoveListener(HandleBuildWellClicked);
-        trainKnights.onClick.RemoveListener(HandleTrainKnightClicked);
-        endDay.onClick.RemoveListener(HandleEndDayClicked);
+        buildFarmButton.onClick.RemoveListener(HandleBuildFarmClicked);
+        buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
+        trainKnightButton.onClick.RemoveListener(HandleTrainKnightClicked);
+        endDayButton.onClick.RemoveListener(HandleEndDayClicked);
     }
 
     private void Start()
     {
+        daySummaryPanel.SetActive(false);
         RefreshHud();
         HandleDayChanged(gameManager.CurrentDay, gameManager.MaxDays);
     }
@@ -82,6 +91,27 @@ public class GameUI : MonoBehaviour
     private void HandleDayChanged(int currentDay, int maxDays)
     {
         dayText.text = $"Day: {currentDay}/{maxDays}";
+    }
+
+    private void HandleDaySummaryReady(string summary)
+    {
+        daySummaryText.text = summary;
+        daySummaryPanel.SetActive(true);
+    }
+
+    private void HandleStateChanged(GameState state)
+    {
+        bool isPlaying = state == GameState.Playing;
+
+        buildFarmButton.interactable = isPlaying;
+        buildWellButton.interactable = isPlaying;
+        trainKnightButton.interactable = isPlaying;
+        endDayButton.interactable = isPlaying;
+
+        if (isPlaying)
+        {
+            daySummaryPanel.SetActive(false);
+        }
     }
 
     private void RefreshHud()
