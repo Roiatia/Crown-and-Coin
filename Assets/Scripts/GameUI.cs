@@ -23,10 +23,17 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button buildWellButton;
     [SerializeField] private Button trainKnightButton;
     [SerializeField] private Button endDayButton;
+    [SerializeField] private Button pauseButton;
+    [SerializeField] private Button resumeButton;
+    [SerializeField] private Button startButton;
+    
 
     [Header("Day Summary")]
     [SerializeField] private GameObject daySummaryPanel;
     [SerializeField] private TMP_Text daySummaryText;
+
+    [Header("Main Menu")]
+    [SerializeField] private GameObject mainMenuPanel;
 
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverPanel;
@@ -44,6 +51,11 @@ public class GameUI : MonoBehaviour
         buildWellButton.onClick.AddListener(HandleBuildWellClicked);
         trainKnightButton.onClick.AddListener(HandleTrainKnightClicked);
         endDayButton.onClick.AddListener(HandleEndDayClicked);
+
+        pauseButton.onClick.AddListener(HandlePauseClicked);
+        resumeButton.onClick.AddListener(HandlePauseClicked);
+
+        startButton.onClick.AddListener(HandleStartClicked);
     }
 
     private void OnDisable()
@@ -58,16 +70,37 @@ public class GameUI : MonoBehaviour
         buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
         trainKnightButton.onClick.RemoveListener(HandleTrainKnightClicked);
         endDayButton.onClick.RemoveListener(HandleEndDayClicked);
+
+
+        pauseButton.onClick.RemoveListener(HandlePauseClicked);
+        resumeButton.onClick.RemoveListener(HandlePauseClicked);
+
+        startButton.onClick.RemoveListener(HandleStartClicked);
+
     }
 
     private void Start()
     {
         daySummaryPanel.SetActive(false);
         gameOverPanel.SetActive(false);
+        mainMenuPanel.SetActive(gameManager.CurrentState == GameState.MainMenu);
+
+
         RefreshHud();
         HandleDayChanged(gameManager.CurrentDay, gameManager.MaxDays);
     }
 
+    public void HandleStartClicked()
+    {
+        gameManager.StartGame();
+    }
+
+    private void HandlePauseClicked()
+    {
+        gameManager.TogglePause();
+    }
+
+   
     private void HandleBuildFarmClicked()
     {
         kingdomManager.BuildFarm();
@@ -95,7 +128,7 @@ public class GameUI : MonoBehaviour
 
     private void HandleDayChanged(int currentDay, int maxDays)
     {
-        dayText.text = $"Day: {currentDay}/{maxDays}";
+        dayText.text = $"{currentDay}/{maxDays}";
     }
 
     private void HandleDaySummaryReady(string summary)
@@ -106,12 +139,15 @@ public class GameUI : MonoBehaviour
 
     private void HandleStateChanged(GameState state)
     {
+        mainMenuPanel.SetActive(state == GameState.MainMenu);
+
         bool isPlaying = state == GameState.Playing;
 
         buildFarmButton.interactable = isPlaying;
         buildWellButton.interactable = isPlaying;
         trainKnightButton.interactable = isPlaying;
         endDayButton.interactable = isPlaying;
+        
 
         if (isPlaying)
         {
@@ -136,12 +172,12 @@ public class GameUI : MonoBehaviour
 
     private void RefreshHud()
     {
-        foodText.text = $"Food: {resourceManager.GetAmount(ResourceType.Food)}";
-        waterText.text = $"Water: {resourceManager.GetAmount(ResourceType.Water)}";
-        goldText.text = $"Gold: {resourceManager.GetAmount(ResourceType.Gold)}";
+        foodText.text = resourceManager.GetAmount(ResourceType.Food).ToString();
+        waterText.text = resourceManager.GetAmount(ResourceType.Water).ToString();
+        goldText.text = resourceManager.GetAmount(ResourceType.Gold).ToString();
 
-        citizensText.text = $"Citizens: {kingdomManager.Citizens}";
-        happinessText.text = $"Happiness: {kingdomManager.Happiness}";
-        knightsText.text = $"Knights: {kingdomManager.Knights}";
+        citizensText.text = kingdomManager.Citizens.ToString();
+        happinessText.text = kingdomManager.Happiness.ToString();
+        knightsText.text = kingdomManager.Knights.ToString();
     }
 }

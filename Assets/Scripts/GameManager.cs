@@ -3,6 +3,7 @@ using UnityEngine;
 
 public enum GameState
 {
+    MainMenu,
     Playing,
     DaySummary,
     Paused,
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
     public int MaxDays => balanceData.maxDays;
     public float DayTimer => dayTimer;
     public float DayDuration => balanceData.dayDuration;
-    public GameState CurrentState { get; private set; } = GameState.Playing;
+    public GameState CurrentState { get; private set; } = GameState.MainMenu;
 
     public event Action<GameState> OnStateChanged;
     public event Action<int, int> OnDayChanged;
@@ -39,7 +40,8 @@ public class GameManager : MonoBehaviour
         dayTimer = balanceData.dayDuration;
         OnDayChanged?.Invoke(currentDay, balanceData.maxDays);
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
-        ChangeState(GameState.Playing);
+        Time.timeScale = 0f;
+        ChangeState(GameState.MainMenu);
     }
 
     private void Update()
@@ -55,6 +57,19 @@ public class GameManager : MonoBehaviour
             EndDay();
         }
     }
+
+
+    public void StartGame()
+    {
+        if(CurrentState != GameState.MainMenu)
+        {
+            return;
+        }
+
+        Time.timeScale = 1f;
+        ChangeState(GameState.Playing);
+    }
+
 
     public void EndDay()
     {
