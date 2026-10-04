@@ -65,7 +65,7 @@ public class KingdomManager : MonoBehaviour
 
     public string ProcessDay()
     {
-        int producedFood = farms * balanceData.foodPerFarm;
+        int producedFood = 0;
         int producedWater = wells * balanceData.waterPerWell;
         int consumedFood = citizens * balanceData.foodConsumedPerCitizen;
         int consumedWater = citizens * balanceData.waterConsumedPerCitizen;

@@ -56,8 +56,8 @@ public class GameUI : MonoBehaviour
         gameManager.OnStateChanged += HandleStateChanged;
         gameManager.OnTimerChanged += HandleTimerChanged;
 
-        buildFarmButton.onClick.AddListener(HandleBuildFarmClicked);
-        buildWellButton.onClick.AddListener(HandleBuildWellClicked);
+        //buildFarmButton.onClick.AddListener(HandleBuildFarmClicked);
+        //buildWellButton.onClick.AddListener(HandleBuildWellClicked);
         trainKnightButton.onClick.AddListener(HandleTrainKnightClicked);
         endDayButton.onClick.AddListener(HandleEndDayClicked);
 
@@ -78,8 +78,8 @@ public class GameUI : MonoBehaviour
         gameManager.OnStateChanged -= HandleStateChanged;
         gameManager.OnTimerChanged -= HandleTimerChanged;
 
-        buildFarmButton.onClick.RemoveListener(HandleBuildFarmClicked);
-        buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
+        //buildFarmButton.onClick.RemoveListener(HandleBuildFarmClicked);
+        //buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
         trainKnightButton.onClick.RemoveListener(HandleTrainKnightClicked);
         endDayButton.onClick.RemoveListener(HandleEndDayClicked);
 
@@ -168,8 +168,8 @@ public class GameUI : MonoBehaviour
 
         bool isPlaying = state == GameState.Playing;
 
-        buildFarmButton.interactable = isPlaying;
-        buildWellButton.interactable = isPlaying;
+        //buildFarmButton.interactable = isPlaying;
+        //buildWellButton.interactable = isPlaying;
         trainKnightButton.interactable = isPlaying;
         endDayButton.interactable = isPlaying;
         
