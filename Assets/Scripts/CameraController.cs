@@ -46,7 +46,7 @@ public class StrategyCameraController : MonoBehaviour
     {
         HandleMovement();
         HandleZoom();
-        HandleDrag();
+        //HandleDrag();
     }
 
     private void HandleMovement()

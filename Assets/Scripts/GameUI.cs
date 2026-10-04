@@ -17,6 +17,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TMP_Text citizensText;
     [SerializeField] private TMP_Text happinessText;
     [SerializeField] private TMP_Text knightsText;
+    [SerializeField] private TMP_Text Timer;
 
     [Header("Buttons")]
     [SerializeField] private Button buildFarmButton;
@@ -26,6 +27,9 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button startButton;
+    [SerializeField] private Button restartButton;
+    [SerializeField] private Button exitMenu;
+
     
 
     [Header("Day Summary")]
@@ -34,6 +38,10 @@ public class GameUI : MonoBehaviour
 
     [Header("Main Menu")]
     [SerializeField] private GameObject mainMenuPanel;
+
+
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject pausePanel;
 
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverPanel;
@@ -46,6 +54,7 @@ public class GameUI : MonoBehaviour
         gameManager.OnDayChanged += HandleDayChanged;
         gameManager.OnDaySummaryReady += HandleDaySummaryReady;
         gameManager.OnStateChanged += HandleStateChanged;
+        gameManager.OnTimerChanged += HandleTimerChanged;
 
         buildFarmButton.onClick.AddListener(HandleBuildFarmClicked);
         buildWellButton.onClick.AddListener(HandleBuildWellClicked);
@@ -54,6 +63,8 @@ public class GameUI : MonoBehaviour
 
         pauseButton.onClick.AddListener(HandlePauseClicked);
         resumeButton.onClick.AddListener(HandlePauseClicked);
+        restartButton.onClick.AddListener(HandleRestartClicked);
+        exitMenu.onClick.AddListener(HandleExitClicked);
 
         startButton.onClick.AddListener(HandleStartClicked);
     }
@@ -65,6 +76,7 @@ public class GameUI : MonoBehaviour
         gameManager.OnDayChanged -= HandleDayChanged;
         gameManager.OnDaySummaryReady -= HandleDaySummaryReady;
         gameManager.OnStateChanged -= HandleStateChanged;
+        gameManager.OnTimerChanged -= HandleTimerChanged;
 
         buildFarmButton.onClick.RemoveListener(HandleBuildFarmClicked);
         buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
@@ -74,6 +86,8 @@ public class GameUI : MonoBehaviour
 
         pauseButton.onClick.RemoveListener(HandlePauseClicked);
         resumeButton.onClick.RemoveListener(HandlePauseClicked);
+        restartButton.onClick.RemoveListener(HandleRestartClicked);
+        exitMenu.onClick.RemoveListener(HandleExitClicked);
 
         startButton.onClick.RemoveListener(HandleStartClicked);
 
@@ -84,6 +98,7 @@ public class GameUI : MonoBehaviour
         daySummaryPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         mainMenuPanel.SetActive(gameManager.CurrentState == GameState.MainMenu);
+        pausePanel.SetActive(false);
 
 
         RefreshHud();
@@ -100,7 +115,16 @@ public class GameUI : MonoBehaviour
         gameManager.TogglePause();
     }
 
-   
+   private void HandleExitClicked()
+    {
+        gameManager.ReturnToMenu();
+    }
+
+    private void HandleRestartClicked()
+    {
+        gameManager.RestartGame();
+    }
+
     private void HandleBuildFarmClicked()
     {
         kingdomManager.BuildFarm();
@@ -140,6 +164,7 @@ public class GameUI : MonoBehaviour
     private void HandleStateChanged(GameState state)
     {
         mainMenuPanel.SetActive(state == GameState.MainMenu);
+        pausePanel.SetActive(state == GameState.Paused);
 
         bool isPlaying = state == GameState.Playing;
 
@@ -168,6 +193,13 @@ public class GameUI : MonoBehaviour
             gameOverPanel.SetActive(true);
             gameOverText.text = "Game Over\nThe kingdom has fallen.";
         }
+    }
+
+    private void HandleTimerChanged(float timeLeft , float dayDurtation)
+    {
+        int seconds = Mathf.CeilToInt(timeLeft);
+        Timer.text = seconds.ToString();
+
     }
 
     private void RefreshHud()
