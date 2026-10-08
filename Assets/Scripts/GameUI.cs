@@ -30,7 +30,9 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private Button exitMenu;
 
-    
+    [SerializeField] private GameObject waterProductionButton;
+    [SerializeField] private GameObject foodProductionButton;
+
 
     [Header("Day Summary")]
     [SerializeField] private GameObject daySummaryPanel;
@@ -165,6 +167,9 @@ public class GameUI : MonoBehaviour
     {
         mainMenuPanel.SetActive(state == GameState.MainMenu);
         pausePanel.SetActive(state == GameState.Paused);
+
+        waterProductionButton.SetActive(state == GameState.Playing);
+        foodProductionButton.SetActive(state == GameState.Playing);
 
         bool isPlaying = state == GameState.Playing;
 
