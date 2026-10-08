@@ -46,9 +46,13 @@ public class KnightTrainingButtonController : MonoBehaviour
 
         if (!trained)
         {
-            buttonText.text = "No Resources";
+            //buttonText.text = "No Resources";
+            PlayerFeedbackUI.Instance.ShowMessage("Not enough resources !");
+
             return;
         }
+
+        PlayerFeedbackUI.Instance.ShowMessage("Huzzah! The knights hath completed their training and stand ready for battle!");
 
         isOnCooldown = true;
         cooldownTimer = cooldownDuration;

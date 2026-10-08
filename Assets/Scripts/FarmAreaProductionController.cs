@@ -84,6 +84,11 @@ public class FarmAreaProductionController : MonoBehaviour
         isGrowing = true;
         timer = growthDuration;
 
+        if(PlayerFeedbackUI.Instance != null)
+        {
+            PlayerFeedbackUI.Instance.ShowMessage("By royal decree, food production hath commenced!");
+        }
+
         UpdateVisuals();
     }
 
@@ -99,6 +104,11 @@ public class FarmAreaProductionController : MonoBehaviour
         }
 
         resourceManager.AddResource(ResourceType.Food, foodReward);
+
+        if(PlayerFeedbackUI.Instance != null)
+        {
+            PlayerFeedbackUI.Instance.ShowMessage(" Rejoice! The harvest hath been gathered! ");
+        }
 
         UpdateVisuals();
     }

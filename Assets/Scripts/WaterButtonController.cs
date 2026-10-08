@@ -45,6 +45,11 @@ public class WaterButtonController : MonoBehaviour
 
         resourceManager.AddResource(ResourceType.Water, waterReward);
 
+        if(PlayerFeedbackUI.Instance !=  null )
+        {
+            PlayerFeedbackUI.Instance.ShowMessage(" Huzzah! The water hath been gathered!");
+        }
+
         isOnCooldown = true;
         cooldownTimer = cooldownDuration;
 
@@ -59,8 +64,6 @@ public class WaterButtonController : MonoBehaviour
         if (buttonText == null)
             return;
 
-        buttonText.text = isOnCooldown
-            ? Mathf.CeilToInt(cooldownTimer).ToString()
-            : "+Water";
+        buttonText.text = isOnCooldown ? Mathf.CeilToInt(cooldownTimer).ToString() : "+Water";
     }
 }

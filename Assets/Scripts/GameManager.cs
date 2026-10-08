@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
     private float dayTimer;
     private bool raidHappenedThisGame;
+    private bool raidPlannedToday;
+    private bool raidWarningShown;
     public int CurrentDay => currentDay;
     public int MaxDays => balanceData.maxDays;
     public float DayTimer => dayTimer;
@@ -39,6 +41,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         dayTimer = balanceData.dayDuration;
+        
+        PlanRaidForCurrentDay();
+
         OnDayChanged?.Invoke(currentDay, balanceData.maxDays);
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
         Time.timeScale = 0f;
@@ -52,6 +57,16 @@ public class GameManager : MonoBehaviour
 
         dayTimer -= Time.deltaTime;
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
+
+        if(raidPlannedToday && !raidWarningShown && dayTimer <= balanceData.dayDuration * 0.5f)
+        {
+            raidWarningShown = true;
+
+            if(PlayerFeedbackUI.Instance != null)
+            {
+                PlayerFeedbackUI.Instance.ShowMessage("Beware! The heathens are approaching! Train thy knights before nightfall");
+            }
+        }
 
         if (dayTimer <= 0f)
         {
@@ -82,9 +97,9 @@ public class GameManager : MonoBehaviour
 
         string summary = kingdomManager.ProcessDay();
 
-        bool raidHappened = ShouldRaidHappenToday();
-
-        if (raidHappened)
+       
+       
+        if (raidPlannedToday)
         {
             kingdomManager.ApplyRaid();
             raidHappenedThisGame = true;
@@ -111,6 +126,14 @@ public class GameManager : MonoBehaviour
 
         ChangeState(GameState.DaySummary);
     }
+
+    private void PlanRaidForCurrentDay()
+    {
+        raidWarningShown = false;
+        raidPlannedToday = ShouldRaidHappenToday();
+
+    }
+
 
 
     private bool ShouldRaidHappenToday()
