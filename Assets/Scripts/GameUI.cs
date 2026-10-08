@@ -30,8 +30,10 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private Button exitMenu;
 
+
     [SerializeField] private GameObject waterProductionButton;
     [SerializeField] private GameObject foodProductionButton;
+    [SerializeField] private GameObject knightTrainingButton;
 
 
     [Header("Day Summary")]
@@ -102,7 +104,6 @@ public class GameUI : MonoBehaviour
         mainMenuPanel.SetActive(gameManager.CurrentState == GameState.MainMenu);
         pausePanel.SetActive(false);
 
-
         RefreshHud();
         HandleDayChanged(gameManager.CurrentDay, gameManager.MaxDays);
     }
@@ -170,6 +171,7 @@ public class GameUI : MonoBehaviour
 
         waterProductionButton.SetActive(state == GameState.Playing);
         foodProductionButton.SetActive(state == GameState.Playing);
+        knightTrainingButton.SetActive(state == GameState.Playing);
 
         bool isPlaying = state == GameState.Playing;
 

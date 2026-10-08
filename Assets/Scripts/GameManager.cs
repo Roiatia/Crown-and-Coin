@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int currentDay = 1;
 
     private float dayTimer;
-
+    private bool raidHappenedThisGame;
     public int CurrentDay => currentDay;
     public int MaxDays => balanceData.maxDays;
     public float DayTimer => dayTimer;
@@ -82,18 +82,18 @@ public class GameManager : MonoBehaviour
 
         string summary = kingdomManager.ProcessDay();
 
-        bool raidHappened = false;
-
-        if (currentDay > 1 && UnityEngine.Random.value <= balanceData.raidChance)
-        {
-            kingdomManager.ApplyRaid();
-            raidHappened = true;
-        }
+        bool raidHappened = ShouldRaidHappenToday();
 
         if (raidHappened)
+        {
+            kingdomManager.ApplyRaid();
+            raidHappenedThisGame = true;
             summary += "\n\nRaid happened during the night!";
+        }
         else
+        {
             summary += "\n\nNo raid tonight.";
+        }
 
         OnDaySummaryReady?.Invoke(summary);
 
@@ -111,6 +111,21 @@ public class GameManager : MonoBehaviour
 
         ChangeState(GameState.DaySummary);
     }
+
+
+    private bool ShouldRaidHappenToday()
+    {
+        if (currentDay <= 1)
+            return false;
+
+        bool isLastDay = currentDay >= balanceData.maxDays;
+
+        if (isLastDay && !raidHappenedThisGame)
+            return true;
+
+        return UnityEngine.Random.value <= balanceData.raidChance;
+    }
+
 
     public void StartNextDay()
     {
