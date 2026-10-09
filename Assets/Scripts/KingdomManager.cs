@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class KingdomManager : MonoBehaviour
@@ -19,6 +20,23 @@ public class KingdomManager : MonoBehaviour
     [Header("Buildings")]
     [SerializeField] private int farms = 1;
     [SerializeField] private int wells = 1;
+
+    [Header("End Game Stats")]
+    [SerializeField] int totalFoodConsumed;
+    [SerializeField] int totalWaterConsumed;
+    [SerializeField] int totalGoldCollected;
+    [SerializeField] int totalKnightsTrained;
+    [SerializeField] int totalNewCitizens;
+    [SerializeField] int totalRaids;
+
+    public int TotalFoodConsumed => totalFoodConsumed;
+    public int TotalWaterConsumed => totalWaterConsumed;
+    public int TotalGoldCollected => TotalGoldCollected;
+    public int TotalKnightsTrained => TotalKnightsTrained;
+    public int TotalNewCitizens => totalNewCitizens;
+    public int TotalRaids => totalRaids;
+
+
 
     public int Citizens => citizens;
     public int Happiness => happiness;
@@ -60,6 +78,7 @@ public class KingdomManager : MonoBehaviour
         resourceManager.Spend(ResourceType.Food, balanceData.knightCostFood);
 
         knights++;
+        totalKnightsTrained++;
 
         OnKingdomChanged?.Invoke();
         return true;
@@ -79,6 +98,11 @@ public class KingdomManager : MonoBehaviour
 
         bool hadEnoughFood = resourceManager.Spend(ResourceType.Food, consumedFood);
         bool hadEnoughWater = resourceManager.Spend(ResourceType.Water, consumedWater);
+
+        if (hadEnoughFood) totalFoodConsumed += consumedFood;
+        if (hadEnoughWater) totalWaterConsumed += consumedWater;
+
+        totalGoldCollected += earnedGold;
 
         if (!hadEnoughFood)
         {
@@ -112,6 +136,7 @@ public class KingdomManager : MonoBehaviour
             }
 
             citizens += newCitizens;
+            totalNewCitizens += newCitizens;
 
             if (PlayerFeedbackUI.Instance != null)
             {
@@ -135,6 +160,8 @@ public class KingdomManager : MonoBehaviour
 
     public String ApplyRaid()
     {
+        totalRaids++; 
+
         resourceManager.Spend(ResourceType.Food, balanceData.raidFoodLoss);
         resourceManager.Spend(ResourceType.Gold, balanceData.raidGoldLoss);
 

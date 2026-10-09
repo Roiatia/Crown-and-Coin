@@ -204,13 +204,16 @@ public class GameUI : MonoBehaviour
 
             gameOverText.text = "Huzzah! Victory is ours!";
             gameOverStats.text =
-                $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
-                $"Final citizens: {kingdomManager.Citizens}\n" +
-                $"Final happiness: {kingdomManager.Happiness}\n" +
-                $"Final knights: {kingdomManager.Knights}\n" +
-                $"Food: {resourceManager.GetAmount(ResourceType.Food)}\n" +
-                $"Water: {resourceManager.GetAmount(ResourceType.Water)}\n" +
-                $"Gold: {resourceManager.GetAmount(ResourceType.Gold)}";
+                gameOverStats.text =
+                                $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
+                                $"Food consumed: {kingdomManager.TotalFoodConsumed}\n" +
+                                $"Water consumed: {kingdomManager.TotalWaterConsumed}\n" +
+                                $"Gold collected: {kingdomManager.TotalGoldCollected}\n" +
+                                $"Knights trained: {kingdomManager.TotalKnightsTrained}\n" +
+                                $"New citizens: {kingdomManager.TotalNewCitizens}\n" +
+                                $"Raids: {kingdomManager.TotalRaids}\n\n" +
+                                $"Final citizens: {kingdomManager.Citizens}\n" +
+                                $"Final happiness: {kingdomManager.Happiness}";
         }
 
         //if (state == GameState.Lose)
@@ -227,14 +230,17 @@ public class GameUI : MonoBehaviour
 
             gameOverText.text = "Alas! All is lost!";
             gameOverStats.text =
-                 $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
-                 $"Final citizens: {kingdomManager.Citizens}\n" +
-                 $"Final happiness: {kingdomManager.Happiness}\n" +
-                 $"Final knights: {kingdomManager.Knights}\n" +
-                 $"Food: {resourceManager.GetAmount(ResourceType.Food)}\n" +
-                 $"Water: {resourceManager.GetAmount(ResourceType.Water)}\n" +
-                 $"Gold: {resourceManager.GetAmount(ResourceType.Gold)}";
-        }
+              gameOverStats.text =
+                                   $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
+                                    $"Food consumed: {kingdomManager.TotalFoodConsumed}\n" +
+                                    $"Water consumed: {kingdomManager.TotalWaterConsumed}\n" +
+                                    $"Gold collected: {kingdomManager.TotalGoldCollected}\n" +
+                                    $"Knights trained: {kingdomManager.TotalKnightsTrained}\n" +
+                                    $"New citizens: {kingdomManager.TotalNewCitizens}\n" +
+                                    $"Raids: {kingdomManager.TotalRaids}\n\n" +
+                                    $"Final citizens: {kingdomManager.Citizens}\n" +
+                                    $"Final happiness: {kingdomManager.Happiness}";
+            }
 
     }
 
