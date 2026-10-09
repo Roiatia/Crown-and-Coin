@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
         dayTimer -= Time.deltaTime;
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
 
-        if(raidPlannedToday && !raidWarningShown && dayTimer <= balanceData.dayDuration * 0.5f)
+        if(raidPlannedToday && !raidWarningShown && dayTimer <= balanceData.dayDuration * balanceData.raidWarningTime)
         {
             raidWarningShown = true;
 
@@ -97,18 +98,28 @@ public class GameManager : MonoBehaviour
 
         string summary = kingdomManager.ProcessDay();
 
-       
-       
+
         if (raidPlannedToday)
         {
-            kingdomManager.ApplyRaid();
+            string raidSummery = kingdomManager.ApplyRaid();
             raidHappenedThisGame = true;
-            summary += "\n\nRaid happened during the night!";
-        }
-        else
+            summary += "\n\n" + raidSummery;
+
+        } else
         {
-            summary += "\n\nNo raid tonight.";
+            summary += "\n\n Huzzah! The kingdom rests peacefully this night";
         }
+       
+        //if (raidPlannedToday)
+        //{
+        //    kingdomManager.ApplyRaid();
+        //    raidHappenedThisGame = true;
+        //    summary += "\n\nRaid happened during the night!";
+        //}
+        //else
+        //{
+        //    summary += "\n\nNo raid tonight.";
+        //}
 
         OnDaySummaryReady?.Invoke(summary);
 
@@ -157,6 +168,7 @@ public class GameManager : MonoBehaviour
 
         currentDay++;
         dayTimer = balanceData.dayDuration;
+        PlanRaidForCurrentDay();
 
         OnDayChanged?.Invoke(currentDay, balanceData.maxDays);
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);

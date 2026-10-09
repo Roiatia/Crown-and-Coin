@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Specialized;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class KingdomManager : MonoBehaviour
@@ -107,26 +109,68 @@ public class KingdomManager : MonoBehaviour
                $"Happiness: {happiness}";
     }
 
-    public void ApplyRaid()
+    public String ApplyRaid()
     {
         resourceManager.Spend(ResourceType.Food, balanceData.raidFoodLoss);
         resourceManager.Spend(ResourceType.Gold, balanceData.raidGoldLoss);
 
-        if (knights > 0)
+        string raidResult;
+
+        if(knights <= 0)
+        {
+            citizens -= balanceData.citizensLossWithoutKnights;
+            happiness -= balanceData.raidHappinessLossWithoutKnights;
+
+            raidResult = "The heathens struck under the cover of night !\n" +
+                          "Alas ! not a single knight stood to defend the kingdom !\n" +
+                          $"citizens: - {balanceData.citizensLossWithoutKnights}\n" +
+                          $"Happiness :  - {balanceData.raidHappinessLossWithoutKnights}";
+        } else if(knights < balanceData.defenceThreshold) 
+        {
+            knights--;
+            citizens -= balanceData.citizensLossWithKnights;
+            happiness -= balanceData.raidHappinessLossWithKnights;
+
+            raidResult = "The heathens struck under the cover of night!\n" +
+                            "Alas! Our defenses were too weak to withstand their assault.\n" +
+                            "Knights Lost: -1\n" +
+                            $"Citizens Lost: -{balanceData.citizensLossWithKnights}\n" +
+                            $"Happiness: -{balanceData.raidHappinessLossWithKnights}";
+        }else
         {
             knights--;
             happiness -= balanceData.raidHappinessLossWithKnights;
-        }
-        else
-        {
-            citizens -= balanceData.raidCitizenLossWithoutKnights;
-            happiness -= balanceData.raidHappinessLossWithoutKnights;
+
+            raidResult = "The heathens struck under the cover of night!\n" +
+                            "Victory! Our brave knights stood strong and defended the kingdom!\n" +
+                             "Knights Lost: -1\n" +
+                               $"Happiness: -{balanceData.raidHappinessLossWithKnights}";
         }
 
         happiness = Mathf.Clamp(happiness, 0, 100);
         citizens = Mathf.Max(citizens, 0);
 
         OnKingdomChanged?.Invoke();
+
+        return raidResult;
+
+
+
+        //if (knights > 0)
+        //{
+        //    knights--;
+        //    happiness -= balanceData.raidHappinessLossWithKnights;
+        //}
+        //else
+        //{
+        //    citizens -= balanceData.raidCitizenLossWithoutKnights;
+        //    happiness -= balanceData.raidHappinessLossWithoutKnights;
+        //}
+
+        //happiness = Mathf.Clamp(happiness, 0, 100);
+        //citizens = Mathf.Max(citizens, 0);
+
+        //OnKingdomChanged?.Invoke();
     }
 
     public bool IsGameLost()

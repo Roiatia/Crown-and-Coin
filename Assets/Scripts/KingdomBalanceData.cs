@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "KingdomBalanceData", menuName = "Scriptable Objects/KingdomBalanceData")]
@@ -24,9 +25,18 @@ public class KingdomBalanceData : ScriptableObject
     [Header("Raid")]
     public int raidFoodLoss = 5;
     public int raidGoldLoss = 5;
+    
+    public int defenceThreshold = 3; //minimum knight for defence
+    public int citizensLossWithoutKnights = 4;
+    public int citizensLossWithKnights = 2;
+
+
     public int raidHappinessLossWithKnights = 5;
     public int raidHappinessLossWithoutKnights = 20;
     public int raidCitizenLossWithoutKnights = 2;
+
+    public float raidWarningTime = 0.5f;
+
 
     [Header("Happiness")]
     public int missingFoodPenalty = 15;
