@@ -42,4 +42,10 @@ public class KingdomBalanceData : ScriptableObject
     public int missingFoodPenalty = 15;
     public int missingWaterPenalty = 15;
     public int dailySuccessBonus = 5;
+
+
+    public int dailyNewCitizens = 1;
+    public int highHappinessBonusCitizens = 1;
+    public int highHappinessThreshold = 80;
+    public int minimumHappinessThreshold = 40;
 }

@@ -26,9 +26,17 @@ MonoBehaviour:
   knightCostFood: 2
   raidFoodLoss: 5
   raidGoldLoss: 5
+  defenceThreshold: 3
+  citizensLossWithoutKnights: 4
+  citizensLossWithKnights: 2
   raidHappinessLossWithKnights: 5
   raidHappinessLossWithoutKnights: 20
   raidCitizenLossWithoutKnights: 10
+  raidWarningTime: 0.5
   missingFoodPenalty: 15
   missingWaterPenalty: 15
   dailySuccessBonus: 5
+  dailyNewCitizens: 5
+  highHappinessBonusCitizens: 2
+  highHappinessThreshold: 80
+  minimumHappinessThreshold: 40

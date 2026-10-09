@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public float DayDuration => balanceData.dayDuration;
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
 
+    private static bool startGameAfterReload;
+
     public event Action<GameState> OnStateChanged;
     public event Action<int, int> OnDayChanged;
     public event Action<float, float> OnTimerChanged;
@@ -49,6 +51,12 @@ public class GameManager : MonoBehaviour
         OnTimerChanged?.Invoke(dayTimer, balanceData.dayDuration);
         Time.timeScale = 0f;
         ChangeState(GameState.MainMenu);
+
+        if (startGameAfterReload)
+        {
+            startGameAfterReload = false;
+            StartGame();
+        }
     }
 
     private void Update()
@@ -200,13 +208,15 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        startGameAfterReload = true;
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ReturnToMenu()
     {
+        startGameAfterReload = false;
         Time.timeScale = 0f;
-        ChangeState(GameState.MainMenu);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

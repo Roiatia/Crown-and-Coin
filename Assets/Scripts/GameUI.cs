@@ -51,6 +51,8 @@ public class GameUI : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TMP_Text gameOverText;
 
+    [SerializeField] private TMP_Text gameOverStats;
+
     private void OnEnable()
     {
         resourceManager.OnResourceChanged += HandleResourceChanged;
@@ -168,6 +170,7 @@ public class GameUI : MonoBehaviour
     {
         mainMenuPanel.SetActive(state == GameState.MainMenu);
         pausePanel.SetActive(state == GameState.Paused);
+        gameOverPanel.SetActive(state == GameState.Win || state == GameState.Lose);
 
         waterProductionButton.SetActive(state == GameState.Playing);
         foodProductionButton.SetActive(state == GameState.Playing);
@@ -187,19 +190,52 @@ public class GameUI : MonoBehaviour
         }
 
 
-        if (state == GameState.Win)
+        //if (state == GameState.Win)
+        //{
+        //    daySummaryPanel.SetActive(false);
+        //    gameOverPanel.SetActive(true);
+        //    gameOverText.text = "Huzzah! Victory is ours!\nThe kingdom hath endured!";
+        //}
+
+        if(state == GameState.Win)
         {
             daySummaryPanel.SetActive(false);
             gameOverPanel.SetActive(true);
-            gameOverText.text = "Victory!\nThe kingdom survived.";
+
+            gameOverText.text = "Huzzah! Victory is ours!";
+            gameOverStats.text =
+                $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
+                $"Final citizens: {kingdomManager.Citizens}\n" +
+                $"Final happiness: {kingdomManager.Happiness}\n" +
+                $"Final knights: {kingdomManager.Knights}\n" +
+                $"Food: {resourceManager.GetAmount(ResourceType.Food)}\n" +
+                $"Water: {resourceManager.GetAmount(ResourceType.Water)}\n" +
+                $"Gold: {resourceManager.GetAmount(ResourceType.Gold)}";
         }
 
-        if (state == GameState.Lose)
+        //if (state == GameState.Lose)
+        //{
+        //    daySummaryPanel.SetActive(false);
+        //    gameOverPanel.SetActive(true);
+        //    gameOverText.text = "Alas! All is lost!\nThe kingdom hath fallen.";
+        //}
+
+        if(state == GameState.Lose)
         {
             daySummaryPanel.SetActive(false);
             gameOverPanel.SetActive(true);
-            gameOverText.text = "Game Over\nThe kingdom has fallen.";
+
+            gameOverText.text = "Alas! All is lost!";
+            gameOverStats.text =
+                 $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
+                 $"Final citizens: {kingdomManager.Citizens}\n" +
+                 $"Final happiness: {kingdomManager.Happiness}\n" +
+                 $"Final knights: {kingdomManager.Knights}\n" +
+                 $"Food: {resourceManager.GetAmount(ResourceType.Food)}\n" +
+                 $"Water: {resourceManager.GetAmount(ResourceType.Water)}\n" +
+                 $"Gold: {resourceManager.GetAmount(ResourceType.Gold)}";
         }
+
     }
 
     private void HandleTimerChanged(float timeLeft , float dayDurtation)

@@ -100,13 +100,37 @@ public class KingdomManager : MonoBehaviour
         happiness = Mathf.Clamp(happiness, 0, 100);
         citizens = Mathf.Max(citizens, 0);
 
+        int newCitizens = 0;
+
+        if (happiness >= balanceData.minimumHappinessThreshold)
+        {
+            newCitizens = balanceData.dailyNewCitizens;
+
+            if (happiness >= balanceData.highHappinessThreshold)
+            {
+                newCitizens += balanceData.highHappinessBonusCitizens;
+            }
+
+            citizens += newCitizens;
+
+            if (PlayerFeedbackUI.Instance != null)
+            {
+                PlayerFeedbackUI.Instance.ShowMessage("Huzzah! New citizens have arrived to join our glorious kingdom!");
+            }
+
+        }
+
+
+
         OnKingdomChanged?.Invoke();
 
-        return $"Food: +{producedFood} -{consumedFood}\n" +
-               $"Water: +{producedWater} -{consumedWater}\n" +
-               $"Gold Tax: +{earnedGold}\n" +
-               $"Citizens: {citizens}\n" +
-               $"Happiness: {happiness}";
+        return $"Daily Summary\n\n" +
+                $"Food consumed: -{consumedFood}\n" +
+                $"Water consumed: -{consumedWater}\n" +
+                $"Gold collected: +{earnedGold}\n" +
+                $"New citizens: +{newCitizens}\n\n" +
+                $"Citizens: {citizens}\n" +
+                $"Happiness: {happiness}";
     }
 
     public String ApplyRaid()
@@ -116,7 +140,7 @@ public class KingdomManager : MonoBehaviour
 
         string raidResult;
 
-        if(knights <= 0)
+        if (knights <= 0)
         {
             citizens -= balanceData.citizensLossWithoutKnights;
             happiness -= balanceData.raidHappinessLossWithoutKnights;
@@ -125,7 +149,8 @@ public class KingdomManager : MonoBehaviour
                           "Alas ! not a single knight stood to defend the kingdom !\n" +
                           $"citizens: - {balanceData.citizensLossWithoutKnights}\n" +
                           $"Happiness :  - {balanceData.raidHappinessLossWithoutKnights}";
-        } else if(knights < balanceData.defenceThreshold) 
+        }
+        else if (knights < balanceData.defenceThreshold)
         {
             knights--;
             citizens -= balanceData.citizensLossWithKnights;
@@ -136,7 +161,8 @@ public class KingdomManager : MonoBehaviour
                             "Knights Lost: -1\n" +
                             $"Citizens Lost: -{balanceData.citizensLossWithKnights}\n" +
                             $"Happiness: -{balanceData.raidHappinessLossWithKnights}";
-        }else
+        }
+        else
         {
             knights--;
             happiness -= balanceData.raidHappinessLossWithKnights;
