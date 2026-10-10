@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3352904e754c3d4c96267f9cc49ab61, type: 3}
   m_Name: KingdomBalanceData
   m_EditorClassIdentifier: Assembly-CSharp::KingdomBalanceData
-  maxDays: 3
-  dayDuration: 20
-  raidChance: 0.35
+  maxDays: 7
+  dayDuration: 60
+  raidChance: 0.4
   foodPerFarm: 8
   waterPerWell: 8
   foodConsumedPerCitizen: 1
@@ -36,6 +36,7 @@ MonoBehaviour:
   missingFoodPenalty: 15
   missingWaterPenalty: 15
   dailySuccessBonus: 5
+  knightsPerClick: 3
   dailyNewCitizens: 5
   highHappinessBonusCitizens: 2
   highHappinessThreshold: 80
