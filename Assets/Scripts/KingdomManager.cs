@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Specialized;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class KingdomManager : MonoBehaviour
@@ -16,6 +13,7 @@ public class KingdomManager : MonoBehaviour
     [SerializeField] private int citizens = 10;
     [SerializeField] private int happiness = 70;
     [SerializeField] private int knights = 0;
+    
 
     [Header("Buildings")]
     [SerializeField] private int farms = 1;
@@ -31,8 +29,8 @@ public class KingdomManager : MonoBehaviour
 
     public int TotalFoodConsumed => totalFoodConsumed;
     public int TotalWaterConsumed => totalWaterConsumed;
-    public int TotalGoldCollected => TotalGoldCollected;
-    public int TotalKnightsTrained => TotalKnightsTrained;
+    public int TotalGoldCollected => totalGoldCollected;
+    public int TotalKnightsTrained => totalKnightsTrained;
     public int TotalNewCitizens => totalNewCitizens;
     public int TotalRaids => totalRaids;
 
@@ -46,39 +44,24 @@ public class KingdomManager : MonoBehaviour
 
     public event Action OnKingdomChanged;
 
-    public bool BuildFarm()
-    {
-        if (!resourceManager.Spend(ResourceType.Gold, balanceData.farmCostGold))
-            return false;
-
-        farms++;
-        OnKingdomChanged?.Invoke();
-        return true;
-    }
-
-    public bool BuildWell()
-    {
-        if (!resourceManager.Spend(ResourceType.Gold, balanceData.wellCostGold))
-            return false;
-
-        wells++;
-        OnKingdomChanged?.Invoke();
-        return true;
-    }
-
+   
     public bool TrainKnight()
     {
-        if (!resourceManager.HasEnough(ResourceType.Gold, balanceData.knightCostGold))
+        int knightsToTrain = balanceData.knightsPerClick; 
+        int totalGoldCost = balanceData.knightCostGold * knightsToTrain;
+        int totalFoodCost = balanceData.knightCostFood * knightsToTrain;
+
+        if (!resourceManager.HasEnough(ResourceType.Gold, totalGoldCost))
             return false;
 
-        if (!resourceManager.HasEnough(ResourceType.Food, balanceData.knightCostFood))
+        if (!resourceManager.HasEnough(ResourceType.Food, totalFoodCost))
             return false;
 
-        resourceManager.Spend(ResourceType.Gold, balanceData.knightCostGold);
-        resourceManager.Spend(ResourceType.Food, balanceData.knightCostFood);
+        resourceManager.Spend(ResourceType.Gold, totalGoldCost);
+        resourceManager.Spend(ResourceType.Food, totalFoodCost);
 
-        knights++;
-        totalKnightsTrained++;
+        knights += knightsToTrain;
+        totalKnightsTrained += knightsToTrain;
 
         OnKingdomChanged?.Invoke();
         return true;
@@ -158,7 +141,7 @@ public class KingdomManager : MonoBehaviour
                 $"Happiness: {happiness}";
     }
 
-    public String ApplyRaid()
+    public string ApplyRaid()
     {
         totalRaids++; 
 
@@ -207,23 +190,6 @@ public class KingdomManager : MonoBehaviour
 
         return raidResult;
 
-
-
-        //if (knights > 0)
-        //{
-        //    knights--;
-        //    happiness -= balanceData.raidHappinessLossWithKnights;
-        //}
-        //else
-        //{
-        //    citizens -= balanceData.raidCitizenLossWithoutKnights;
-        //    happiness -= balanceData.raidHappinessLossWithoutKnights;
-        //}
-
-        //happiness = Mathf.Clamp(happiness, 0, 100);
-        //citizens = Mathf.Max(citizens, 0);
-
-        //OnKingdomChanged?.Invoke();
     }
 
     public bool IsGameLost()

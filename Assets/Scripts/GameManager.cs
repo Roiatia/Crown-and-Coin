@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
@@ -109,25 +108,15 @@ public class GameManager : MonoBehaviour
 
         if (raidPlannedToday)
         {
-            string raidSummery = kingdomManager.ApplyRaid();
+            string raidSummary = kingdomManager.ApplyRaid();
             raidHappenedThisGame = true;
-            summary += "\n\n" + raidSummery;
+            summary += "\n\n" + raidSummary;
 
         } else
         {
             summary += "\n\n Huzzah! The kingdom rests peacefully this night";
         }
        
-        //if (raidPlannedToday)
-        //{
-        //    kingdomManager.ApplyRaid();
-        //    raidHappenedThisGame = true;
-        //    summary += "\n\nRaid happened during the night!";
-        //}
-        //else
-        //{
-        //    summary += "\n\nNo raid tonight.";
-        //}
 
         OnDaySummaryReady?.Invoke(summary);
 
@@ -216,7 +205,7 @@ public class GameManager : MonoBehaviour
     public void ReturnToMenu()
     {
         startGameAfterReload = false;
-        Time.timeScale = 0f;
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -147,6 +147,6 @@ public class FarmAreaProductionController : MonoBehaviour
             return;
         }
 
-        buttonText.text = "+Food";
+        buttonText.text = "Grow food";
     }
 }

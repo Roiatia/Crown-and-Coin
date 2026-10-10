@@ -46,8 +46,7 @@ public class KnightTrainingButtonController : MonoBehaviour
 
         if (!trained)
         {
-            //buttonText.text = "No Resources";
-            PlayerFeedbackUI.Instance.ShowMessage("Not enough resources !");
+            PlayerFeedbackUI.Instance.ShowMessage("Alas! The royal coffers lack the resources!");
 
             return;
         }
@@ -74,6 +73,6 @@ public class KnightTrainingButtonController : MonoBehaviour
             return;
         }
 
-        buttonText.text = "+Knight";
+        buttonText.text = "Train Knights";
     }
 }

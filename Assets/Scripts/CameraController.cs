@@ -19,7 +19,6 @@ public class StrategyCameraController : MonoBehaviour
     [SerializeField] private float maxZoom = 14f;
 
     private Camera cameraComponent;
-    private Vector2 lastPointerPosition;
 
     private void Awake()
     {
@@ -46,7 +45,6 @@ public class StrategyCameraController : MonoBehaviour
     {
         HandleMovement();
         HandleZoom();
-        //HandleDrag();
     }
 
     private void HandleMovement()
@@ -68,22 +66,6 @@ public class StrategyCameraController : MonoBehaviour
         cameraComponent.orthographicSize = Mathf.Clamp(cameraComponent.orthographicSize, minZoom, maxZoom);
     }
 
-    private void HandleDrag()
-    {
-        Vector2 pointerPosition = pointerPositionAction.action.ReadValue<Vector2>();
-
-        if (dragAction.action.WasPressedThisFrame())
-        {
-            lastPointerPosition = pointerPosition;
-        }
-
-        if (dragAction.action.IsPressed())
-        {
-            Vector2 delta = pointerPosition - lastPointerPosition;
-            Vector3 movement = new Vector3(-delta.x, -delta.y, 0f);
-
-            transform.position += movement * dragSpeed;
-            lastPointerPosition = pointerPosition;
-        }
-    }
+   
+    
 }

@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "KingdomBalanceData", menuName = "Scriptable Objects/KingdomBalanceData")]
@@ -43,6 +42,7 @@ public class KingdomBalanceData : ScriptableObject
     public int missingWaterPenalty = 15;
     public int dailySuccessBonus = 5;
 
+     public int knightsPerClick = 3;
 
     public int dailyNewCitizens = 1;
     public int highHappinessBonusCitizens = 1;

@@ -64,6 +64,6 @@ public class WaterButtonController : MonoBehaviour
         if (buttonText == null)
             return;
 
-        buttonText.text = isOnCooldown ? Mathf.CeilToInt(cooldownTimer).ToString() : "+Water";
+        buttonText.text = isOnCooldown ? Mathf.CeilToInt(cooldownTimer).ToString() : "Get water";
     }
 }

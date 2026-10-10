@@ -20,9 +20,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TMP_Text Timer;
 
     [Header("Buttons")]
-    [SerializeField] private Button buildFarmButton;
-    [SerializeField] private Button buildWellButton;
-    [SerializeField] private Button trainKnightButton;
+    
     [SerializeField] private Button endDayButton;
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
@@ -62,9 +60,7 @@ public class GameUI : MonoBehaviour
         gameManager.OnStateChanged += HandleStateChanged;
         gameManager.OnTimerChanged += HandleTimerChanged;
 
-        //buildFarmButton.onClick.AddListener(HandleBuildFarmClicked);
-        //buildWellButton.onClick.AddListener(HandleBuildWellClicked);
-        trainKnightButton.onClick.AddListener(HandleTrainKnightClicked);
+        
         endDayButton.onClick.AddListener(HandleEndDayClicked);
 
         pauseButton.onClick.AddListener(HandlePauseClicked);
@@ -84,9 +80,7 @@ public class GameUI : MonoBehaviour
         gameManager.OnStateChanged -= HandleStateChanged;
         gameManager.OnTimerChanged -= HandleTimerChanged;
 
-        //buildFarmButton.onClick.RemoveListener(HandleBuildFarmClicked);
-        //buildWellButton.onClick.RemoveListener(HandleBuildWellClicked);
-        trainKnightButton.onClick.RemoveListener(HandleTrainKnightClicked);
+       
         endDayButton.onClick.RemoveListener(HandleEndDayClicked);
 
 
@@ -130,21 +124,7 @@ public class GameUI : MonoBehaviour
         gameManager.RestartGame();
     }
 
-    private void HandleBuildFarmClicked()
-    {
-        kingdomManager.BuildFarm();
-    }
-
-    private void HandleBuildWellClicked()
-    {
-        kingdomManager.BuildWell();
-    }
-
-    private void HandleTrainKnightClicked()
-    {
-        kingdomManager.TrainKnight();
-    }
-
+ 
     private void HandleEndDayClicked()
     {
         gameManager.EndDay();
@@ -178,9 +158,7 @@ public class GameUI : MonoBehaviour
 
         bool isPlaying = state == GameState.Playing;
 
-        //buildFarmButton.interactable = isPlaying;
-        //buildWellButton.interactable = isPlaying;
-        trainKnightButton.interactable = isPlaying;
+      
         endDayButton.interactable = isPlaying;
         
 
@@ -190,12 +168,7 @@ public class GameUI : MonoBehaviour
         }
 
 
-        //if (state == GameState.Win)
-        //{
-        //    daySummaryPanel.SetActive(false);
-        //    gameOverPanel.SetActive(true);
-        //    gameOverText.text = "Huzzah! Victory is ours!\nThe kingdom hath endured!";
-        //}
+      
 
         if(state == GameState.Win)
         {
@@ -203,25 +176,8 @@ public class GameUI : MonoBehaviour
             gameOverPanel.SetActive(true);
 
             gameOverText.text = "Huzzah! Victory is ours!";
-            gameOverStats.text =
-                gameOverStats.text =
-                                $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
-                                $"Food consumed: {kingdomManager.TotalFoodConsumed}\n" +
-                                $"Water consumed: {kingdomManager.TotalWaterConsumed}\n" +
-                                $"Gold collected: {kingdomManager.TotalGoldCollected}\n" +
-                                $"Knights trained: {kingdomManager.TotalKnightsTrained}\n" +
-                                $"New citizens: {kingdomManager.TotalNewCitizens}\n" +
-                                $"Raids: {kingdomManager.TotalRaids}\n\n" +
-                                $"Final citizens: {kingdomManager.Citizens}\n" +
-                                $"Final happiness: {kingdomManager.Happiness}";
+            UpdateGameOverStats();
         }
-
-        //if (state == GameState.Lose)
-        //{
-        //    daySummaryPanel.SetActive(false);
-        //    gameOverPanel.SetActive(true);
-        //    gameOverText.text = "Alas! All is lost!\nThe kingdom hath fallen.";
-        //}
 
         if(state == GameState.Lose)
         {
@@ -229,17 +185,7 @@ public class GameUI : MonoBehaviour
             gameOverPanel.SetActive(true);
 
             gameOverText.text = "Alas! All is lost!";
-            gameOverStats.text =
-              gameOverStats.text =
-                                   $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
-                                    $"Food consumed: {kingdomManager.TotalFoodConsumed}\n" +
-                                    $"Water consumed: {kingdomManager.TotalWaterConsumed}\n" +
-                                    $"Gold collected: {kingdomManager.TotalGoldCollected}\n" +
-                                    $"Knights trained: {kingdomManager.TotalKnightsTrained}\n" +
-                                    $"New citizens: {kingdomManager.TotalNewCitizens}\n" +
-                                    $"Raids: {kingdomManager.TotalRaids}\n\n" +
-                                    $"Final citizens: {kingdomManager.Citizens}\n" +
-                                    $"Final happiness: {kingdomManager.Happiness}";
+            UpdateGameOverStats();
             }
 
     }
@@ -260,5 +206,19 @@ public class GameUI : MonoBehaviour
         citizensText.text = kingdomManager.Citizens.ToString();
         happinessText.text = kingdomManager.Happiness.ToString();
         knightsText.text = kingdomManager.Knights.ToString();
+    }
+
+    private void UpdateGameOverStats()
+    {
+        gameOverStats.text =
+            $"Days survived: {gameManager.CurrentDay} / {gameManager.MaxDays}\n" +
+            $"Food consumed: {kingdomManager.TotalFoodConsumed}\n" +
+            $"Water consumed: {kingdomManager.TotalWaterConsumed}\n" +
+            $"Gold collected: {kingdomManager.TotalGoldCollected}\n" +
+            $"Knights trained: {kingdomManager.TotalKnightsTrained}\n" +
+            $"New citizens: {kingdomManager.TotalNewCitizens}\n" +
+            $"Raids: {kingdomManager.TotalRaids}\n\n" +
+            $"Final citizens: {kingdomManager.Citizens}\n" +
+            $"Final happiness: {kingdomManager.Happiness}";
     }
 }
